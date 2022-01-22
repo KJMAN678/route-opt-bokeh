@@ -1,2 +1,2 @@
-# ローカル実行
+# ローカル実行用のコマンド
 bokeh serve app.py --show
