@@ -1,1 +1,3 @@
-- [アプリ](https://route-opt-bokeh.herokuapp.com/)  
+- [アプリ](https://route-opt-bokeh.herokuapp.com/app)  
+- [Bokeh 公式ドキュメント](https://docs.bokeh.org/en/2.4.0/index.html)  
+- [OR-Tools 公式ドキュメント](https://developers.google.com/optimization)  
