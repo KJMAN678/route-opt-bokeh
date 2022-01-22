@@ -10,7 +10,9 @@ TOOLS = "tap"
 bound = 10
 p = figure(title='Double click to leave a dot.',
            tools=TOOLS,width=700,height=700,
-           x_range=(-bound, bound), y_range=(-bound, bound))
+           x_range=(-bound, bound), y_range=(-bound, bound),
+           sizing_mode="stretch_width"
+           )
 
 source = ColumnDataSource(data=dict(x=[], y=[]))   
 p.circle(source=source,x='x',y='y', radius=0.3, alpha=0.5)
