@@ -6,27 +6,50 @@ from bokeh.palettes import d3
 from bokeh.plotting import figure
 import numpy as np
 import optimize
+from PIL import Image
+
+# 背景画像の読込
+img_path = "static/4564885_m.jpg"
+img_file = Image.open(img_path)
+img_file = np.array(img_file)
+img = np.empty((img_file.shape[0], img_file.shape[1]), dtype=np.uint32)
+view = img.view(dtype=np.uint8).reshape((img_file.shape[0], img_file.shape[1], 4))
+view[:, :, 0:3] = np.flipud(img_file[:, :, 0:3])#上下反転あり
+view[:, :, 3] = 255
+
 
 opt = optimize.root_opt() # ルート最適化用のインスタンス作成
-depo = (0, 0) # 出発点の座標
+depo = (880, 700) # 出発点の座標
 coord_list=[depo] # クリックした場所の位置を保存するリスト。初期値として出発点の座標を設定。
 
-bound = 10 # 表示するグラフの範囲
+# 画面構成
 plot = figure(
-            title='スライダーバーで指定した台数の車両でクリックした座標を巡回する',
+            title='スライダーバーで指定した飛行機の数でクリックした座標を巡回する',
             tools="tap", 
             height=600, 
             width=1000,
-            x_range=(-bound*2, bound*2), 
-            y_range=(-bound, bound),
+            x_range=(0, img_file.shape[1]),
+            y_range=(0, img_file.shape[0]),
           )
 
+# 背景画像を表示
+plot.image_rgba(
+            image=[img],
+            x=0, 
+            y=0, 
+            dw=img_file.shape[1], 
+            dh=img_file.shape[0],
+            global_alpha=0.3
+            )
+
+text_padding = 20.0
+
 source = ColumnDataSource(data=dict(x=[], y=[]))           # 全体で使用する bokeh 用データ
-plot.circle(source=source,x='x',y='y', radius=0.2, alpha=0.8) # クリックして作成する巡回先を点として表示
-plot.diamond([0], [0], size=30, color="red", alpha=0.8)       # 出発点をひし形として表示
+plot.circle(source=source,x='x',y='y', radius=10.0, alpha=0.8) # クリックして作成する巡回先を点として表示
+plot.diamond([depo[0]], [depo[1]], size=30, color="red", alpha=1.0)       # 出発点をひし形として表示
 plot.text(
-          x=[0.5], 
-          y=[0.5], 
+          x=[depo[0] + text_padding],
+          y=[depo[1] + text_padding], 
           text=["出発点"], 
           text_font_size="18px",
           text_baseline="middle", 
@@ -48,8 +71,8 @@ def callback_click(event):
               y=[i[1] for i in coord_list]
             )
     plot.text( # クリックした回数をテキスト表示
-          x=[event.x+0.5], 
-          y=[event.y+0.5], 
+          x=[event.x + text_padding],
+          y=[event.y + text_padding], 
           text=[click_count], 
           text_font_size="18px",
           text_baseline="middle", 
@@ -99,22 +122,22 @@ def callback_button():
         )
         
         plot.add_layout(plot.legend[0], 'right') # 凡例の追加
-        
+
 # ボタンウィジェットの実装
 button = Button(label="最適化の実行")
 button.on_click(callback_button)
 
-## 車両台数を決めるスライダー
-slider = Slider(start=1, end=10, value=3, step=1, title="車両台数")
+## 飛行機の台数を決めるスライダー
+slider = Slider(start=1, end=10, value=3, step=1, title="飛行機の数")
 slider.js_on_change("value", CustomJS(code="""
     console.log('slider: value=' + this.value, this.toString())
 """))
 
-# 各機能をWeb画面にレイアウトする
-# layout=Column(row(slider, button), plot, sizing_mode='scale_width')
 
+# スライドバーとボタンを縦に並べる
 widgets = Column(slider, button, sizing_mode="fixed", height=250, width=150)
 
+# 全体の構成
 layout = Column(row(plot, widgets), sizing_mode='scale_width')
 
 # ブラウザに表示するために必要な処理
