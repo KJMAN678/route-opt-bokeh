@@ -1,3 +1,4 @@
 - [アプリ](https://route-opt-bokeh.herokuapp.com/app)  
 - [Bokeh 公式ドキュメント](https://docs.bokeh.org/en/2.4.0/index.html)  
 - [OR-Tools 公式ドキュメント](https://developers.google.com/optimization)  
+- 参考記事 [bokehにてカラー画像を表示](https://qiita.com/samacoba/items/922b428c6716f3285e11)
