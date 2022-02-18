@@ -1,2 +1,19 @@
 # ローカル実行用のコマンド
 bokeh serve app.py --show
+
+route-app-test
+
+ASP-test-ba71
+
+
+cd 
+# 初回
+az webapp up --name test-root --resource-group test --plan ASP-test-aebf --sku F1 --location "Japan East"
+
+# 2回目以降
+az webapp up
+
+python3 -m venv venv
+source venv/bin/activate
+python3 -m pip install --upgrade pip
+pip install -r requirements.txt
